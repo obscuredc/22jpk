@@ -43,3 +43,6 @@ button:hover {
     border: 1px black dashed;
     width: 70%;
 }
+.dimmed {
+    color: dimgray;
+}
