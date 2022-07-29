@@ -1,0 +1,21 @@
+{
+    "pack": {
+        "name": "pack name",
+        "desc": "pack description",
+        "creator": "name of creator"
+    },
+    "cards": [
+        {
+            "face": "How bees are alive?",
+            "flip": [
+                "100"
+            ]
+        },
+        {
+            "face": "What is your name?",
+            "flip": [
+                "Billy", "Joe", "John"
+            ]
+        }
+    ]
+}

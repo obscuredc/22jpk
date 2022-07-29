@@ -1,0 +1,45 @@
+.lowbar {
+    bottom: 0;
+    position: fixed;
+    overflow: hidden;
+    width: 100%;
+    text-align: center;
+}
+.rightlowbar {
+    text-align: right;
+}
+.leftlowbar {
+    text-align: left;
+}
+* {
+    background-color: darkslategray;
+    font-family: monospace;
+}
+.highlight {
+    color: hotpink;
+}
+
+button {
+    padding: 7px;
+    margin: 2px;
+    background-color: darkslategray;
+    transition: 1s;
+}
+button:hover {
+    background-color: slategray;
+    color: greenyellow;
+}
+#dynamic {
+    position: relative;
+    padding: 20px;
+}
+.card {
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    padding: 20px;
+    border: 1px black dashed;
+    width: 70%;
+}
