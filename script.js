@@ -1,3 +1,4 @@
+
 let jpk = {models:{},builtins:{},utils:{},client:{},ui:{}};
 
 jpk.models.load = `<div class="card">
@@ -90,7 +91,7 @@ jpk.utils.loaddeck = (deck) => {
     }
     jpk.client.deck = deck;
     jpk.ui.dynamic(`<div class="card">
-            <h1 id="card-title">Loading</h1>
+            <h1><span id="card-title">Loading</span><span class="dimmed" id="card-hint"></span></h1>
             <div id="card-descriptions">
                 <form id="card-form" autocomplete="off">
                     <input id="card-input" type="text"><input id="card-submit" type="submit">
@@ -99,6 +100,7 @@ jpk.utils.loaddeck = (deck) => {
         </div>`)
     let form = document.getElementById("card-form")
     let input = document.getElementById("card-input")
+    let hint = document.getElementById("card-hint")
     //thx to Thenlie#9148
     form.addEventListener('submit', (Event) => {
         Event.preventDefault()
@@ -108,12 +110,20 @@ jpk.utils.loaddeck = (deck) => {
             jpk.client.pickedCard.seen++;
             jpk.client.pickedCard.correct++;
             jpk.client.cards++;
+            hint.innerHTML = "";
             jpk.utils.loadcard()
         } else if (input.value == "s") {
             input.value = "";
             jpk.client.pickedCard.seen++;
             jpk.client.cards++;
+            hint.innerHTML = "";
             jpk.utils.loadcard()
+        } else if (input.value == "?") {
+            input.value = "";
+            jpk.client.pickedCard.seen++;
+            jpk.client.cards++;
+            jpk.ui.updateLowBar(jpk.client.deck.pack.name, jpk.client.cards, jpk.client.pickedCard.seen, jpk.client.pickedCard.correct, jpk.client.pickedCard.getPercent())
+            hint.innerHTML = " (" + jpk.client.pickedCard.flip[0] + ") "
         } else if (!jpk.client.pickedCard.isCorrect(input.value)) {
             input.value = "";
             jpk.client.pickedCard.seen++;
@@ -157,7 +167,7 @@ jpk.utils.go = () => {
 //updates the lowbar ui
 jpk.ui.updateLowBar = (playing, cards, seen, correct, percentage) => {
     let lowbar = document.getElementById("lowbar");
-    lowbar.innerHTML = `<button onclick="jpk.utils.quitdeck()">quit</button><span class="leftlowbar">playing <span class="highlight">${playing}</span> cards ${cards}</span> ——————————— <span class="rightlowbar">seen ${seen} correct ${correct} precent ${percentage}</span>`
+    lowbar.innerHTML = `<button onclick="jpk.utils.quitdeck()">quit</button><span class="leftlowbar">playing <span class="highlight">${playing}</span> cards ${cards}</span> ——————————— <span class="rightlowbar">seen ${seen} correct ${correct} percent ${percentage}</span>`
 }
 
 //shorthand way of loading to the dynamic div
