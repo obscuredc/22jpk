@@ -1,5 +1,5 @@
 # 22jpk
-just a flashcards thing. Additional notes:
+just a flashcards thing. warning that it is very barebones - feel free to modify if you give credit. Additional notes:
 - typing `s` will skip the current card
 - the current card will remain up until it is answer correctly or skipped
 - capitalization does not matter
