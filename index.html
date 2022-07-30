@@ -7,14 +7,19 @@
 </head>
 <body onload="jpk.utils.go()">
     <script src="script.js"></script>
-    <div id="dynamic">
-        <div class="card">
-            <h1 class="card-title"></h1>
-            <div class="card-descriptions">
-                <form>
-                    <input type="text"><input type="submit">
-                </form>
+    <div id="flx-container">
+        <div id="dynamic">
+            <div class="card">
+                <h1 class="card-title"></h1>
+                <div class="card-descriptions">
+                    <form>
+                        <input type="text"><input type="submit">
+                    </form>
+                </div>
             </div>
+        </div>
+        <div id="SessionStats">
+            <p id="SessionStats-p"></p>
         </div>
     </div>
     <div id="lowbar" class="lowbar"><button onclick="jpk.deck.Quit()">quit</button><span class="leftlowbar">playing <span class="highlight">unknown</span> cards 0</span> ——————————— <span class="rightlowbar">seen 0 correct 0 precent 0</span></div>
