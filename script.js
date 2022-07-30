@@ -1,4 +1,3 @@
-
 let jpk = {models:{},builtins:{},utils:{},client:{},ui:{}};
 
 jpk.models.load = `<div class="card">
@@ -36,12 +35,6 @@ jpk.builtins.TestDeck = `{
     ]
 }`
 
-jpk.client = {
-    deck: null,
-    cards: 0,
-    pickedCard: null
-}
-
 jpk.utils.deck = class {
     constructor(name, desc, creator, cards) {
         this.pack = {
@@ -51,6 +44,12 @@ jpk.utils.deck = class {
         }
         this.cards = cards;
     }
+}
+
+jpk.client = {
+    deck: new jpk.utils.deck("unknown", "unknown", "unknown", []),
+    cards: 0,
+    pickedCard: null
 }
 
 jpk.utils.card = class {
@@ -64,7 +63,7 @@ jpk.utils.card = class {
         return this.flip.includes(attempt);
     }
     getPercent() {
-        return Math.round((this.correct/this.seen)*100)
+        return Math.round((this.correct / this.seen) * 100) == NaN ? 50 : Math.round((this.correct / this.seen) * 100)
     }
 }
 
@@ -88,6 +87,7 @@ jpk.utils.loaddeck = (deck) => {
     } catch {
         alert("22JPK: Something went wrong loading deck")
         jpk.utils.go(); //try to restart without crashing pls pls pls
+        return;
     }
     jpk.client.deck = deck;
     jpk.ui.dynamic(`<div class="card">
@@ -124,11 +124,13 @@ jpk.utils.loaddeck = (deck) => {
             jpk.client.cards++;
             jpk.ui.updateLowBar(jpk.client.deck.pack.name, jpk.client.cards, jpk.client.pickedCard.seen, jpk.client.pickedCard.correct, jpk.client.pickedCard.getPercent())
             hint.innerHTML = " (" + jpk.client.pickedCard.flip[0] + ") "
+            jpk.ui.updateSessionStats()
         } else if (!jpk.client.pickedCard.isCorrect(input.value)) {
             input.value = "";
             jpk.client.pickedCard.seen++;
             jpk.client.cards++;
             jpk.ui.updateLowBar(jpk.client.deck.pack.name, jpk.client.cards, jpk.client.pickedCard.seen, jpk.client.pickedCard.correct, jpk.client.pickedCard.getPercent())
+            jpk.ui.updateSessionStats()
         }
     })
     jpk.utils.loadcard();
@@ -143,7 +145,7 @@ jpk.utils.loadcard = () => {
 
 //go back to loading screen, unload deck
 jpk.utils.quitdeck = () => {
-    jpk.client.deck = null;
+    jpk.client.deck = new jpk.utils.deck("unknown", "unknown", "unknown", []);
     jpk.client.pickedCard = null;
     jpk.utils.go();
 }
@@ -157,11 +159,11 @@ jpk.utils.go = () => {
         Event.preventDefault();
         let file = file_holder.files[0];
         file.text().then((v) => {
-            console.log(v)
             jpk.utils.loaddeck(v)
         })
     })
     jpk.ui.updateLowBar("unknown", jpk.client.cards, 0, 0, 0)
+    jpk.ui.updateSessionStats()
 }
 
 //updates the lowbar ui
@@ -179,5 +181,23 @@ jpk.ui.dynamic = (content) => {
 jpk.ui.pushcard = () => {
     document.getElementById("card-title").innerHTML = jpk.client.pickedCard.face;
     jpk.ui.updateLowBar(jpk.client.deck.pack.name, jpk.client.cards, jpk.client.pickedCard.seen, jpk.client.pickedCard.correct, jpk.client.pickedCard.getPercent())
+    jpk.ui.updateSessionStats()
+}
+
+jpk.ui.updateSessionStats = () => {
+    let mastered=[];
+    let learn = [];
+    let hard=[];
+    jpk.client.deck.cards.forEach((v) => {
+        if(v.getPercent() >= 80 && v!=jpk.client.pickedCard){mastered.push(v.face)}
+        else if (v.getPercent() < 80 && v.getPercent() > 30 && v != jpk.client.pickedCard){learn.push(v.face)}
+        else if (v.getPercent() <= 30 && v != jpk.client.pickedCard){hard.push(v.face)}
+        else if (v.getPercent() >= 80) { mastered.push('<span class="sublight">' + v.face + '</span>') }
+        else if (v.getPercent() < 80 && v.getPercent() > 30) { learn.push('<span class="sublight">' + v.face + '</span>') }
+        else if (v.getPercent() <= 30) { hard.push('<span class="sublight">' + v.face + '</span>') }
+    })
+    let sessioncontainer = document.getElementById("SessionStats-p")
+
+    sessioncontainer.innerHTML = `<span class="highlight">${jpk.client.deck.pack.name}</span> by <span class="highlight">${jpk.client.deck.pack.creator}</span><br>loaded ${jpk.client.deck.cards.length} cards<br><br><span class="highlight">MASTERED (${mastered.length})</span><br>${mastered.join(", ")}<br><span class="highlight">LEARNING (${learn.length})</span><br>${learn.join(", ")}<br><span class="highlight">HARD (${hard.length})</span><br>${hard.join(", ")}`
 }
 
